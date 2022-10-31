@@ -1,0 +1,83 @@
+:root {
+  --gray: #292D32;
+  --mid-gray: #4E555E;
+  --mid-gray-rgba: 78, 85, 94;
+  --light-gray: #A8A8A8;
+  --font-color: #6F6D6D;
+  --white-off: #F1F1F1;
+  --green: #47CB84;
+
+
+
+
+  --orange: #DF4500;
+  --yellow: #f4e057;
+  --gray-shine: #3C3735;
+  --red: #dc3545;
+}
+
+@font-face {
+  font-family: Montserrat-Regular;
+  src: url("/assets/fonts/Montserrat-Regular.ttf");
+}
+
+@font-face {
+  font-family: Montserrat-Medium;
+  src: url("/assets/fonts/Montserrat-Medium.ttf");
+}
+
+body {
+  //font-family: Montserrat-Regular, monospace;
+  font-family: Montserrat-Medium, monospace;
+  background: var(--white-off);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  letter-spacing: 2px;
+  font-family: Montserrat-Medium, monospace;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  overflow: hidden;
+  padding: 0 2rem;
+
+  h2 {
+    font-size: 26px;
+    margin: 20px 0;
+    text-align: center;
+
+    small {
+      font-size: 0.5em;
+    }
+  }
+
+  h3 {
+    text-align: center;
+  }
+}
+
+button {
+  font-family: Montserrat-Medium, monospace;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #fff;
+  border-radius: 30px;
+  cursor: pointer;
+
+  &.add {
+    background-color: var(--green);
+  }
+}

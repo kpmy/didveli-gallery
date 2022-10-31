@@ -1,0 +1,29 @@
+.main {
+  margin-left: 18%;
+  padding: 30px 40px;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  text-transform: uppercase;
+}
+
+th:first-child,
+th:last-child {
+  width: 50px;
+}
+
+th, td {
+  text-align: center;
+}
+
+.footer {
+  //todo нормально сделать
+  margin-left: 18%;
+  padding: 30px 40px;
+}
+
+

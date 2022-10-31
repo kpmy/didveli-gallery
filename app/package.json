@@ -1,0 +1,13 @@
+{
+  "name": "didveli-gallery",
+  "description": "App for Didveli Gallery apartments",
+  "author": {
+    "name": "Mikhail Klokov",
+    "email": "klokov.mixan@gmail.com"
+  },
+  "version": "1.0.0",
+  "main": "main.js",
+  "private": true,
+  "dependencies": {
+  }
+}

@@ -1,0 +1,81 @@
+<app-header [title]="'Services information'"></app-header>
+
+<div class="main">
+  <table
+    tuiTable
+    class="table"
+    [columns]="columns"
+  >
+    <thead>
+    <tr tuiThGroup>
+      <th tuiTh>№</th>
+      <th tuiTh>Service name</th>
+      <th tuiTh>Service price</th>
+      <th tuiTh></th>
+    </tr>
+    </thead>
+    <tbody
+      tuiTbody
+    >
+    <tr
+      *ngFor="let service of services$ | async; let idx = index; trackBy: trackByFn"
+      tuiTr
+    >
+      <td *tuiCell="'index'" tuiTd>
+        {{ idx + 1 }}
+      </td>
+      <td *tuiCell="'name'" tuiTd>
+        {{ service.name }}
+      </td>
+      <td *tuiCell="'price'" tuiTd>
+        {{ service.price }}
+      </td>
+      <td *tuiCell="'actions'" tuiTd>
+        <tui-hosted-dropdown
+          #dropdown
+          [content]="content"
+        >
+          <button
+            tuiIconButton
+            appearance="flat"
+            icon="tuiIconMoreVer"
+            type="button"
+            [pseudoHover]="dropdown.open || null"
+          ></button>
+        </tui-hosted-dropdown>
+
+        <ng-template
+          #content
+        >
+          <tui-data-list
+            tuiDataListDropdownManager
+
+          >
+            <button
+              *tuiLet="'Edit' as item"
+              tuiOption
+              [size]="size"
+              (click)="selectOption(item)"
+            >
+              {{ item }}
+            </button>
+
+            <button
+              *tuiLet="'Delete' as item"
+              tuiOption
+              [size]="size"
+              (click)="deleteService(service)"
+            >
+              {{ item }}
+            </button>
+          </tui-data-list>
+        </ng-template>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <button class="add" (click)="addItem()">Add Service</button>
+</div>

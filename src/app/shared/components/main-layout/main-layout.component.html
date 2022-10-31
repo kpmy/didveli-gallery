@@ -1,0 +1,22 @@
+<aside class="sidebar">
+  <div>
+    <img src="assets/didveli-gallery.png" alt="Didveli Gallery">
+  </div>
+  <nav class="nav">
+    <ul>
+      <ng-container *ngFor="let tab of tabs">
+        <li routerLinkActive="active">
+          <a [routerLink]="tab.link">
+            <tui-svg
+              [src]="buildLink(tab.icon)"
+              class="icon"
+            ></tui-svg>
+            {{ tab.name }}
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+  </nav>
+</aside>
+
+<router-outlet></router-outlet>
