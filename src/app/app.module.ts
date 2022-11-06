@@ -1,53 +1,55 @@
-import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
-import {
-  TuiRootModule,
-  TuiDialogModule,
-  TuiAlertModule,
-  TUI_SANITIZER,
-  TuiHostedDropdownModule,
-  TuiButtonModule, TuiDataListModule
-} from '@taiga-ui/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
-import { HomeModule } from './home/home.module';
-import { DetailModule } from './detail/detail.module';
+import {NgDompurifySanitizer} from '@tinkoff/ng-dompurify';
+import {TUI_SANITIZER} from '@taiga-ui/core';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+import {CoreModule} from './core/core.module';
+import {SharedModule} from './shared/shared.module';
 
-import { AppComponent } from './app.component';
-import {AppService} from './app.service';
+import {AppComponent} from './app.component';
 import {ServiceInfoComponent} from './service-info/service-info.component';
 import {RoomInfoComponent} from './room-info/room-info.component';
-import {TuiTableModule} from '@taiga-ui/addon-table';
-import {TuiDataListDropdownManagerModule} from "@taiga-ui/kit";
-import {TuiActiveZoneModule, TuiLetModule} from "@taiga-ui/cdk";
+import {TaigaModule} from './taiga.module';
+import {
+  AddEditServiceInfoDialogComponent
+} from './service-info/add-edit-service-info-dialog/add-edit-service-info-dialog.component';
+import {
+  AddEditRoomInfoDialogComponent
+} from './room-info/add-edit-room-info-dialog/add-edit-room-info-dialog.component';
+import {ClientInfoComponent} from './client-info/client-info.component';
+import {
+  AddEditClientInfoDialogComponent
+} from './client-info/add-edit-client-info-dialog/add-edit-client-info-dialog.component';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import { BookingComponent } from './booking/booking.component';
+import { CompanyInfoComponent } from './company-info/company-info.component';
 
 @NgModule({
-  declarations: [AppComponent, ServiceInfoComponent, RoomInfoComponent],
+  declarations: [
+    AppComponent,
+    ServiceInfoComponent,
+    RoomInfoComponent,
+    AddEditServiceInfoDialogComponent,
+    AddEditRoomInfoDialogComponent,
+    ClientInfoComponent,
+    AddEditClientInfoDialogComponent,
+    BookingComponent,
+    CompanyInfoComponent],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     CoreModule,
     SharedModule,
-    HomeModule,
-    DetailModule,
+    TaigaModule,
     BrowserAnimationsModule,
-    TuiRootModule,
-    TuiDialogModule,
-    TuiAlertModule,
-    TuiTableModule,
-    TuiHostedDropdownModule,
-    TuiButtonModule,
-    TuiDataListDropdownManagerModule,
-    TuiActiveZoneModule,
-    TuiDataListModule,
-    TuiLetModule
+    ReactiveFormsModule,
+    ScrollingModule,
   ],
-  providers: [AppService, {provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
+  providers: [{provide: TUI_SANITIZER, useClass: NgDompurifySanitizer}],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}

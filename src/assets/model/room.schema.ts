@@ -1,13 +1,13 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 @Entity()
-export class Service {
+export class Room {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column('varchar', { length: 256 })
-  name: string;
+  roomNumber: string;
 
-  @Column('real')
-  price: number;
+  @Column('varchar', { length: 256 })
+  owner: string;
 }

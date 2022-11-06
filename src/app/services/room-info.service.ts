@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
-import { IpcRenderer } from 'electron';
+import {IpcRenderer} from 'electron';
 import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {Service} from '../../assets/model/service.schema';
+import {Room} from '../../assets/model/room.schema';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServiceInfoService {
+export class RoomInfoService {
 
-  // todo вынести в абстрактный сервис?
   private readonly ipc: IpcRenderer | undefined = void 0;
 
   constructor() {
@@ -24,21 +23,21 @@ export class ServiceInfoService {
     }
   }
 
-  getAll(): Observable<Service[]> {
-    return of(this.ipc.sendSync('get-services')).pipe(
+  getAll(): Observable<Room[]> {
+    return of(this.ipc.sendSync('get-rooms')).pipe(
       catchError((error: any) => throwError(error.json))
     );
   }
 
-  save(service: Service): Observable<Service[]> {
+  save(room: Room): Observable<Room[]> {
     return of(
-      this.ipc.sendSync('add-service', service)
+      this.ipc.sendSync('add-room', room)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
-  delete(service: Service): Observable<Service[]> {
+  delete(room: Room): Observable<Room[]> {
     return of(
-      this.ipc.sendSync('delete-service', service)
+      this.ipc.sendSync('delete-room', room)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 }

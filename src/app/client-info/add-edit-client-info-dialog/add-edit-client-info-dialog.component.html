@@ -1,0 +1,43 @@
+<form
+  class="b-form"
+  [formGroup]="group"
+>
+  <tui-input formControlName="name">Name</tui-input>
+  <tui-error
+    formControlName="name"
+    [error]="[] | tuiFieldError | async"
+  ></tui-error>
+  <tui-input class="tui-space_vertical-3" formControlName="surname">Surname</tui-input>
+  <tui-input class="tui-space_vertical-3" formControlName="passport">Passport</tui-input>
+<!--  <tui-input class="tui-space_vertical-3" formControlName="passportDate">Passport Date</tui-input>-->
+  <tui-input-date formControlName="passportDate">
+    Passport Date
+    <input tuiTextfield />
+  </tui-input-date>
+  <tui-select
+    class="tui-space_vertical-3"
+    formControlName="citizenship"
+  >
+    Citizenship
+    <cdk-virtual-scroll-viewport
+      *tuiDataList
+      tuiScrollable
+      class="scroll"
+      [itemSize]="44"
+    >
+      <tui-data-list>
+        <button
+          *cdkVirtualFor="let item of citizenship"
+          tuiOption
+          [value]="item"
+        >
+          {{ item }}
+        </button>
+      </tui-data-list>
+    </cdk-virtual-scroll-viewport>
+  </tui-select>
+
+</form>
+
+<button tuiButton appearance="primary" class="tui-space_right-3" (click)="ok()" [disabled]="disabled">Save</button>
+<button tuiButton (click)="cancel()">Cancel</button>

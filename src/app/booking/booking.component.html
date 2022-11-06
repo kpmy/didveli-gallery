@@ -1,0 +1,69 @@
+<app-header [title]="title"></app-header>
+
+<div class="main">
+  <table tuiTable [columns]="columns">
+    <thead>
+    <tr tuiThGroup>
+      <th tuiTh>№</th>
+      <th tuiTh>Room</th>
+      <th tuiTh>Guest</th>
+      <th tuiTh>Arrival Date</th>
+      <th tuiTh>Departure Date</th>
+      <th tuiTh>Owner</th>
+      <th tuiTh>Lessor</th>
+      <th tuiTh>Portal</th>
+      <th tuiTh>Bill</th>
+      <th tuiTh></th>
+    </tr>
+    </thead>
+    <tbody tuiTbody>
+<!--    <tr *ngFor="let client of clients$ | async; let idx = index; trackBy: trackByFn" tuiTr>-->
+<!--      <td *tuiCell="'index'" tuiTd>-->
+<!--        {{ idx + 1 }}-->
+<!--      </td>-->
+<!--      <td *tuiCell="'name'" tuiTd>-->
+<!--        {{ client.name }}-->
+<!--      </td>-->
+<!--      <td *tuiCell="'surname'" tuiTd>-->
+<!--        {{ client.surname }}-->
+<!--      </td>-->
+<!--      <td *tuiCell="'passport'" tuiTd>-->
+<!--        {{ client.passport }}-->
+<!--      </td>-->
+<!--      <td *tuiCell="'passportDate'" tuiTd>-->
+<!--        {{ client.passportDate | date: 'dd.MM.yyyy' }}-->
+<!--      </td>-->
+<!--      <td *tuiCell="'citizenship'" tuiTd>-->
+<!--        {{ client.citizenship }}-->
+<!--      </td>-->
+<!--      <td *tuiCell="'actions'" tuiTd>-->
+<!--        <tui-hosted-dropdown #dropdown [content]="content">-->
+<!--          <button-->
+<!--            tuiIconButton-->
+<!--            appearance="flat"-->
+<!--            icon="tuiIconMoreVer"-->
+<!--            type="button"-->
+<!--            [pseudoHover]="dropdown.open || null"-->
+<!--          ></button>-->
+<!--        </tui-hosted-dropdown>-->
+
+<!--        <ng-template #content>-->
+<!--          <tui-data-list tuiDataListDropdownManager>-->
+<!--            <button tuiOption (click)="update(client)">-->
+<!--              Edit-->
+<!--            </button>-->
+
+<!--            <button tuiOption (click)="delete(client)">-->
+<!--              Delete-->
+<!--            </button>-->
+<!--          </tui-data-list>-->
+<!--        </ng-template>-->
+<!--      </td>-->
+<!--    </tr>-->
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <button tuiButton appearance="primary" (click)="add()">Active Room</button>
+</div>

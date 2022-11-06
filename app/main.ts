@@ -3,6 +3,11 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {DataSource} from "typeorm";
 import {Service} from "../src/assets/model/service.schema";
+import {Room} from "../src/assets/model/room.schema";
+import {Client} from "../src/assets/model/client.schema";
+
+// const {serviceRepository} = require("./serviceRepository");
+// const {roomRepository} = require("./roomRepository");
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -16,16 +21,106 @@ function createWindow(): BrowserWindow {
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
-    entities: [ Service ],
+    entities: [ Client, Service, Room ],
   });
 
   AppDataSource.initialize()
     .then(() => {
       // here you can start to work with your database
+      // serviceRepository(AppDataSource);
+      // roomRepository(AppDataSource);
+
+      const clientRepo = AppDataSource.getRepository(Client);
+
+      ipcMain.on('get-clients', async (event: any, ...args: any[]) => {
+        try {
+          event.returnValue = await clientRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('add-client', async (event: any, _client: Client) => {
+        try {
+          const client = await clientRepo.create(_client);
+          await clientRepo.save(client);
+          event.returnValue = await clientRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('delete-client', async (event: any, _client: Client) => {
+        try {
+          const client = await clientRepo.create(_client);
+          await clientRepo.remove(client);
+          event.returnValue = await clientRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      const serviceRepo = AppDataSource.getRepository(Service);
+
+      ipcMain.on('get-services', async (event: any, ...args: any[]) => {
+        try {
+          event.returnValue = await serviceRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('add-service', async (event: any, _service: Service) => {
+        try {
+          const service = await serviceRepo.create(_service);
+          await serviceRepo.save(service);
+          event.returnValue = await serviceRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('delete-service', async (event: any, _service: Service) => {
+        try {
+          const service = await serviceRepo.create(_service);
+          await serviceRepo.remove(service);
+          event.returnValue = await serviceRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      const roomRepo = AppDataSource.getRepository(Room);
+
+      ipcMain.on('get-rooms', async (event: any, ...args: any[]) => {
+        try {
+          event.returnValue = await roomRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('add-room', async (event: any, _room: Room) => {
+        try {
+          const room = await roomRepo.create(_room);
+          await roomRepo.save(room);
+          event.returnValue = await roomRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('delete-room', async (event: any, _room: Room) => {
+        try {
+          const room = await roomRepo.create(_room);
+          await roomRepo.remove(room);
+          event.returnValue = await roomRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
     })
     .catch((error) => console.log(error))
-
-  const serviceRepo = AppDataSource.getRepository(Service);
 
   const size = screen.getPrimaryDisplay().workAreaSize;
 
@@ -67,34 +162,6 @@ function createWindow(): BrowserWindow {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     win = null;
-  });
-
-  ipcMain.on('get-services', async (event: any, ...args: any[]) => {
-    try {
-      event.returnValue = await serviceRepo.find();
-    } catch (err) {
-      throw err;
-    }
-  });
-
-  ipcMain.on('add-service', async (event: any, _service: Service) => {
-    try {
-      const service = await serviceRepo.create(_service);
-      await serviceRepo.save(service);
-      event.returnValue = await serviceRepo.find();
-    } catch (err) {
-      throw err;
-    }
-  });
-
-  ipcMain.on('delete-service', async (event: any, _service: Service) => {
-    try {
-      const service = await serviceRepo.create(_service);
-      await serviceRepo.remove(service);
-      event.returnValue = await serviceRepo.find();
-    } catch (err) {
-      throw err;
-    }
   });
 
   return win;

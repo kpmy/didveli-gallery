@@ -6,14 +6,14 @@
   --font-color: #6F6D6D;
   --white-off: #F1F1F1;
   --green: #47CB84;
-
+  --red: #FF0000;
 
 
 
   --orange: #DF4500;
   --yellow: #f4e057;
   --gray-shine: #3C3735;
-  --red: #dc3545;
+
 }
 
 @font-face {
@@ -28,7 +28,7 @@
 
 body {
   //font-family: Montserrat-Regular, monospace;
-  font-family: Montserrat-Medium, monospace;
+
   background: var(--white-off);
 }
 
@@ -36,10 +36,6 @@ body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-h2 {
-  letter-spacing: 2px;
   font-family: Montserrat-Medium, monospace;
 }
 
@@ -64,20 +60,81 @@ h2 {
   }
 }
 
-button {
-  font-family: Montserrat-Medium, monospace;
-  border: none;
-  padding: 15px 32px;
+.centered {
   text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 14px;
-  text-transform: uppercase;
-  color: #fff;
-  border-radius: 30px;
-  cursor: pointer;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding-left: 18%;
+}
 
-  &.add {
-    background-color: var(--green);
-  }
+
+// pages
+
+.main {
+  margin-left: 18%;
+  padding: 30px 40px;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  text-transform: uppercase;
+}
+
+th:first-child,
+th:last-child {
+  width: 50px;
+}
+
+th, td {
+  text-align: center;
+}
+
+.footer {
+  //todo нормально сделать
+  margin-left: 18%;
+  padding: 30px 40px;
+}
+
+
+
+
+
+
+
+
+
+
+
+button {
+  //font-family: Montserrat-Medium, monospace;
+//  border: none;
+//  padding: 10px 22px;
+//  text-align: center;
+//  text-decoration: none;
+//  display: inline-block;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 500;
+//  color: #fff;
+//  border-radius: 30px;
+//  cursor: pointer;
+//  background-color: var(--light-gray);
+//
+//  &.add {
+//    background-color: var(--green);
+//  }
+//
+//  &.delete {
+//    background-color: var(--red);
+//  }
+//
+//  //todo
+//  &.margin {
+//    margin-right: 15px;
+//  }
 }

@@ -5,13 +5,23 @@ import {FormsModule} from '@angular/forms';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 import {HeaderComponent} from './components/header/header.component';
 import {MainLayoutComponent} from './components/main-layout/main-layout.component';
-import {TuiSvgModule} from '@taiga-ui/core';
 import {AppRoutingModule} from '../app-routing.module';
+import { FooterComponent } from './components/footer/footer.component';
+import { YesNoConfirmComponent } from './yes-no-confirm/yes-no-confirm.component';
+import {TaigaModule} from '../taiga.module';
+import {TuiAppearance, tuiButtonOptionsProvider} from '@taiga-ui/core';
 
 @NgModule({
-  declarations: [PageNotFoundComponent, MainLayoutComponent, HeaderComponent],
-  imports: [CommonModule, FormsModule, TuiSvgModule, AppRoutingModule,],
-  exports: [FormsModule, AppRoutingModule, HeaderComponent]
+  declarations: [PageNotFoundComponent, MainLayoutComponent, HeaderComponent, FooterComponent, YesNoConfirmComponent],
+  imports: [CommonModule, FormsModule, TaigaModule, AppRoutingModule,],
+  exports: [FormsModule, AppRoutingModule, HeaderComponent],
+  providers: [
+    tuiButtonOptionsProvider({
+      shape: `rounded`,
+      appearance: TuiAppearance.Outline,
+      size: 'm'
+    }),
+  ],
 })
 export class SharedModule {
 }

@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { IpcRenderer } from 'electron';
+import {Injectable} from '@angular/core';
+import {IpcRenderer} from 'electron';
 import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {Service} from '../../assets/model/service.schema';
+import {Client} from '../../assets/model/client.schema';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServiceInfoService {
+export class ClientInfoService {
 
   // todo вынести в абстрактный сервис?
   private readonly ipc: IpcRenderer | undefined = void 0;
@@ -24,21 +24,21 @@ export class ServiceInfoService {
     }
   }
 
-  getAll(): Observable<Service[]> {
-    return of(this.ipc.sendSync('get-services')).pipe(
+  getAll(): Observable<Client[]> {
+    return of(this.ipc.sendSync('get-clients')).pipe(
       catchError((error: any) => throwError(error.json))
     );
   }
 
-  save(service: Service): Observable<Service[]> {
+  save(client: Client): Observable<Client[]> {
     return of(
-      this.ipc.sendSync('add-service', service)
+      this.ipc.sendSync('add-client', client)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
-  delete(service: Service): Observable<Service[]> {
+  delete(client: Client): Observable<Client[]> {
     return of(
-      this.ipc.sendSync('delete-service', service)
+      this.ipc.sendSync('delete-client', client)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 }

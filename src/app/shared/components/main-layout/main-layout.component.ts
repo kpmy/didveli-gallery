@@ -11,12 +11,12 @@ export class MainLayoutComponent implements OnInit {
   readonly tabs = [
     {
       name: 'Active room',
-      link: 'active-room',
+      link: 'booking/active',
       icon: 'active-room.svg',
     },
     {
       name: 'Passive room',
-      link: 'passive-room',
+      link: 'booking/passive',
       icon: 'passive-room.svg',
     },
     {
@@ -39,7 +39,7 @@ export class MainLayoutComponent implements OnInit {
       link: 'company',
       icon: 'company.svg' ,
     }
-  ]
+  ];
 
   constructor() { }
 
