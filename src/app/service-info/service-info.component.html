@@ -1,51 +1,64 @@
 <app-header [title]="'Services information'"></app-header>
 
 <div class="main">
-  <table tuiTable [columns]="columns">
+  <table *ngIf="data$ | async as data" tuiTable [columns]="columns">
     <thead>
-    <tr tuiThGroup>
-      <th tuiTh>№</th>
-      <th tuiTh>Service name</th>
-      <th tuiTh>Service price</th>
-      <th tuiTh></th>
-    </tr>
+      <tr tuiThGroup>
+        <th tuiTh>№</th>
+        <th tuiTh>Service name</th>
+        <th tuiTh>Service price</th>
+        <th tuiTh></th>
+      </tr>
     </thead>
-    <tbody tuiTbody>
-    <tr *ngFor="let service of services$ | async; let idx = index; trackBy: trackByFn" tuiTr>
-      <td *tuiCell="'index'" tuiTd>
-        {{ idx + 1 }}
-      </td>
-      <td *tuiCell="'name'" tuiTd>
-        {{ service.name }}
-      </td>
-      <td *tuiCell="'price'" tuiTd>
-        {{ service.price }}
-      </td>
-      <td *tuiCell="'actions'" tuiTd>
-        <tui-hosted-dropdown #dropdown [content]="content">
-          <button
-            tuiIconButton
-            appearance="flat"
-            icon="tuiIconMoreVer"
-            type="button"
-            [pseudoHover]="dropdown.open || null"
-          ></button>
-        </tui-hosted-dropdown>
+    <tbody tuiTbody *tuiLet="data as services" [data]="services">
+      <tr *ngFor="let service of services; let idx = index; trackBy: trackByFn" tuiTr>
+        <td *tuiCell="'index'" tuiTd>
+          {{ idx + 1 }}
+        </td>
+        <td *tuiCell="'name'" tuiTd>
+          {{ service.name }}
+        </td>
+        <td *tuiCell="'price'" tuiTd>
+          {{ service.price }}
+        </td>
+        <td *tuiCell="'actions'" tuiTd>
+          <tui-hosted-dropdown #dropdown [content]="content">
+            <button
+              tuiIconButton
+              appearance="flat"
+              icon="tuiIconMoreVer"
+              type="button"
+              [pseudoHover]="dropdown.open || null"
+            ></button>
+          </tui-hosted-dropdown>
 
-        <ng-template #content>
-          <tui-data-list tuiDataListDropdownManager>
-            <button tuiOption (click)="update(service)">
-              Edit
-            </button>
+          <ng-template #content>
+            <tui-data-list tuiDataListDropdownManager>
+              <button tuiOption (click)="update(service)">
+                Edit
+              </button>
 
-            <button tuiOption (click)="delete(service)">
-              Delete
-            </button>
-          </tui-data-list>
-        </ng-template>
-      </td>
-    </tr>
+              <button tuiOption (click)="delete(service)">
+                Delete
+              </button>
+            </tui-data-list>
+          </ng-template>
+        </td>
+      </tr>
     </tbody>
+
+    <tfoot>
+      <tr>
+        <td [colSpan]="columns.length">
+          <tui-table-pagination
+            class="tui-space_top-2"
+            [total]="(total$ | async) || 0"
+            (pageChange)="onPage($event)"
+            (sizeChange)="onSize($event)"
+          ></tui-table-pagination>
+        </td>
+      </tr>
+    </tfoot>
   </table>
 </div>
 

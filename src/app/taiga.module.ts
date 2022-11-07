@@ -7,7 +7,7 @@ import {
   TuiHostedDropdownModule,
   TuiRootModule, TuiScrollbarModule, TuiSvgModule
 } from '@taiga-ui/core';
-import {TuiTableModule} from '@taiga-ui/addon-table';
+import {TuiTableModule, TuiTablePaginationModule} from '@taiga-ui/addon-table';
 import {
   TuiDataListDropdownManagerModule,
   TuiFieldErrorPipeModule, TuiInputDateModule,
@@ -34,7 +34,8 @@ const taigaModules = [
   TuiErrorModule,
   TuiSelectModule,
   TuiScrollbarModule,
-  TuiInputDateModule
+  TuiInputDateModule,
+  TuiTablePaginationModule
 ];
 
 @NgModule({

@@ -62,9 +62,9 @@ function createWindow(): BrowserWindow {
 
       const serviceRepo = AppDataSource.getRepository(Service);
 
-      ipcMain.on('get-services', async (event: any, ...args: any[]) => {
+      ipcMain.on('get-services', async (event: any, _skip: number, _take: number) => {
         try {
-          event.returnValue = await serviceRepo.find();
+          event.returnValue = await serviceRepo.createQueryBuilder("service").skip(_skip).take(_take).getMany();
         } catch (err) {
           throw err;
         }
@@ -85,6 +85,14 @@ function createWindow(): BrowserWindow {
           const service = await serviceRepo.create(_service);
           await serviceRepo.remove(service);
           event.returnValue = await serviceRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('count-services', async (event: any, ...args: any[]) => {
+        try {
+          event.returnValue = await serviceRepo.count();
         } catch (err) {
           throw err;
         }
