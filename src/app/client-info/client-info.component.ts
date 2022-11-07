@@ -1,11 +1,21 @@
-import {ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, EMPTY, Observable, of, Subject, switchMap} from 'rxjs';
+import {ChangeDetectionStrategy, Component, Inject, Injector} from '@angular/core';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  filter, map,
+  Observable,
+  share,
+  startWith,
+  switchMap
+} from 'rxjs';
 import {SharedService} from '../shared/shared.service';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {Client} from '../../assets/model/client.schema';
 import {ClientInfoService} from '../services/client-info.service';
 import {AddEditClientInfoDialogComponent} from './add-edit-client-info-dialog/add-edit-client-info-dialog.component';
+import {tuiIsPresent} from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-client-info',
@@ -13,12 +23,35 @@ import {AddEditClientInfoDialogComponent} from './add-edit-client-info-dialog/ad
   styleUrls: ['./client-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClientInfoComponent implements OnInit, OnDestroy {
+export class ClientInfoComponent {
 
-  clients$: Observable<Client[]> = of([]);
-  refreshClients$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  destroy$: Subject<boolean> = new Subject<boolean>();
+  readonly refreshClients$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   readonly columns = [`index`, `name`, `surname`, `passport`, `passportDate`, `citizenship`, `actions`];
+  readonly size$ = new BehaviorSubject(10);
+  readonly page$ = new BehaviorSubject(0);
+
+  readonly total$ = this.refreshClients$.pipe(
+    switchMap(_ =>
+      this.clientInfoService.getCount().pipe(
+        filter(tuiIsPresent),
+        startWith(1),
+      )));
+
+  readonly getAll$ = this.refreshClients$.pipe(
+    switchMap(_ =>
+      combineLatest([
+        this.page$,
+        this.size$,
+      ]).pipe(
+        switchMap(query => this.getData(...query).pipe(startWith(null))),
+        share(),
+      )));
+
+  readonly data$: Observable<readonly Client[]> = this.getAll$.pipe(
+    filter(tuiIsPresent),
+    map(clients => clients.filter(tuiIsPresent)),
+    startWith([]),
+  );
 
   constructor(private readonly clientInfoService: ClientInfoService,
               private readonly sharedService: SharedService,
@@ -26,10 +59,9 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
               @Inject(Injector) private readonly injector: Injector) {
   }
 
-  ngOnInit(): void {
-    this.clients$ = this.refreshClients$.pipe(
-      switchMap(_ => this.clientInfoService.getAll())
-    );
+  getData(page: number, size: number): Observable<ReadonlyArray<Client | null>> {
+    const start = page * size;
+    return this.clientInfoService.getAll(start, size);
   }
 
   add(): void {
@@ -40,7 +72,6 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
     this.openAddEditClientDialog('Edit client', client);
   }
 
-  //todo т.к. res возвращает массив сервисов, мб можно их не перезагружать?
   delete(client: Client): void {
     this.sharedService.initYesNoDialog(`${client.name} client`)
       .pipe(
@@ -70,9 +101,12 @@ export class ClientInfoComponent implements OnInit, OnDestroy {
     return index;
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+  onSize(size: number): void {
+    this.size$.next(size);
+  }
+
+  onPage(page: number): void {
+    this.page$.next(page);
   }
 
 }

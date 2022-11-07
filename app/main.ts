@@ -32,9 +32,9 @@ function createWindow(): BrowserWindow {
 
       const clientRepo = AppDataSource.getRepository(Client);
 
-      ipcMain.on('get-clients', async (event: any, ...args: any[]) => {
+      ipcMain.on('get-clients', async (event: any, _skip: number, _take: number) => {
         try {
-          event.returnValue = await clientRepo.find();
+          event.returnValue = await clientRepo.createQueryBuilder("client").skip(_skip).take(_take).getMany();
         } catch (err) {
           throw err;
         }
@@ -55,6 +55,14 @@ function createWindow(): BrowserWindow {
           const client = await clientRepo.create(_client);
           await clientRepo.remove(client);
           event.returnValue = await clientRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('count-clients', async (event: any, ...args: any[]) => {
+        try {
+          event.returnValue = await clientRepo.count();
         } catch (err) {
           throw err;
         }
@@ -100,9 +108,9 @@ function createWindow(): BrowserWindow {
 
       const roomRepo = AppDataSource.getRepository(Room);
 
-      ipcMain.on('get-rooms', async (event: any, ...args: any[]) => {
+      ipcMain.on('get-rooms', async (event: any, _skip: number, _take: number) => {
         try {
-          event.returnValue = await roomRepo.find();
+          event.returnValue = await roomRepo.createQueryBuilder("room").skip(_skip).take(_take).getMany();
         } catch (err) {
           throw err;
         }
@@ -123,6 +131,14 @@ function createWindow(): BrowserWindow {
           const room = await roomRepo.create(_room);
           await roomRepo.remove(room);
           event.returnValue = await roomRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('count-rooms', async (event: any, ...args: any[]) => {
+        try {
+          event.returnValue = await roomRepo.count();
         } catch (err) {
           throw err;
         }

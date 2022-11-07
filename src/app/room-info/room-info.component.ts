@@ -1,11 +1,21 @@
-import {ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy, OnInit} from '@angular/core';
-import {BehaviorSubject, EMPTY, Observable, of, Subject, switchMap} from 'rxjs';
+import {ChangeDetectionStrategy, Component, Inject, Injector} from '@angular/core';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  filter, map,
+  Observable,
+  share,
+  startWith,
+  switchMap
+} from 'rxjs';
 import {SharedService} from '../shared/shared.service';
 import {TuiDialogService} from '@taiga-ui/core';
 import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
 import {Room} from '../../assets/model/room.schema';
 import {RoomInfoService} from '../services/room-info.service';
 import {AddEditRoomInfoDialogComponent} from './add-edit-room-info-dialog/add-edit-room-info-dialog.component';
+import {tuiIsPresent} from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-room-info',
@@ -13,22 +23,44 @@ import {AddEditRoomInfoDialogComponent} from './add-edit-room-info-dialog/add-ed
   styleUrls: ['./room-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RoomInfoComponent implements OnInit, OnDestroy {
+export class RoomInfoComponent {
 
-  rooms$: Observable<Room[]> = of([]);
-  refreshRooms$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  destroy$: Subject<boolean> = new Subject<boolean>();
+  readonly refreshRooms$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   readonly columns = [`index`, `roomNumber`, `owner`, `actions`];
+  readonly size$ = new BehaviorSubject(10);
+  readonly page$ = new BehaviorSubject(0);
+
+  readonly total$ = this.refreshRooms$.pipe(
+    switchMap(_ =>
+      this.roomInfoService.getCount().pipe(
+        filter(tuiIsPresent),
+        startWith(1),
+      )));
+
+  readonly getAll$ = this.refreshRooms$.pipe(
+    switchMap(_ =>
+      combineLatest([
+        this.page$,
+        this.size$,
+      ]).pipe(
+        switchMap(query => this.getData(...query).pipe(startWith(null))),
+        share(),
+      )));
+
+  readonly data$: Observable<readonly Room[]> = this.getAll$.pipe(
+    filter(tuiIsPresent),
+    map(rooms => rooms.filter(tuiIsPresent)),
+    startWith([]),
+  );
 
   constructor(private readonly roomInfoService: RoomInfoService,
               private readonly sharedService: SharedService,
               @Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
               @Inject(Injector) private readonly injector: Injector) { }
 
-  ngOnInit(): void {
-    this.rooms$ = this.refreshRooms$.pipe(
-      switchMap(_ => this.roomInfoService.getAll())
-    );
+  getData(page: number, size: number): Observable<ReadonlyArray<Room | null>> {
+    const start = page * size;
+    return this.roomInfoService.getAll(start, size);
   }
 
   add(): void {
@@ -55,7 +87,6 @@ export class RoomInfoComponent implements OnInit, OnDestroy {
       .subscribe(() => this.refreshRooms$.next(true));
   }
 
-  //todo т.к. res возвращает массив сервисов, мб можно их не перезагружать?
   delete(room: Room): void {
     this.sharedService.initYesNoDialog(`${room.roomNumber} room`)
       .pipe(
@@ -69,9 +100,12 @@ export class RoomInfoComponent implements OnInit, OnDestroy {
     return index;
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-    this.destroy$.unsubscribe();
+  onSize(size: number): void {
+    this.size$.next(size);
+  }
+
+  onPage(page: number): void {
+    this.page$.next(page);
   }
 
 }

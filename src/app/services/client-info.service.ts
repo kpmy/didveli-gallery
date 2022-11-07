@@ -24,8 +24,8 @@ export class ClientInfoService {
     }
   }
 
-  getAll(): Observable<Client[]> {
-    return of(this.ipc.sendSync('get-clients')).pipe(
+  getAll(skip: number, take: number): Observable<Client[]> {
+    return of(this.ipc.sendSync('get-clients', skip, take)).pipe(
       catchError((error: any) => throwError(error.json))
     );
   }
@@ -40,5 +40,11 @@ export class ClientInfoService {
     return of(
       this.ipc.sendSync('delete-client', client)
     ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
+  getCount(): Observable<number> {
+    return of(this.ipc.sendSync('count-clients')).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
   }
 }

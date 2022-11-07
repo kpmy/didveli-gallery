@@ -23,8 +23,8 @@ export class RoomInfoService {
     }
   }
 
-  getAll(): Observable<Room[]> {
-    return of(this.ipc.sendSync('get-rooms')).pipe(
+  getAll(skip: number, take: number): Observable<Room[]> {
+    return of(this.ipc.sendSync('get-rooms', skip, take)).pipe(
       catchError((error: any) => throwError(error.json))
     );
   }
@@ -39,5 +39,11 @@ export class RoomInfoService {
     return of(
       this.ipc.sendSync('delete-room', room)
     ).pipe(catchError((error: any) => throwError(error.json)));
+  }
+
+  getCount(): Observable<number> {
+    return of(this.ipc.sendSync('count-rooms')).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
   }
 }
