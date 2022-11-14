@@ -1,0 +1,82 @@
+<form
+  class="b-form"
+  [tuiTextfieldCleaner]="true"
+  [formGroup]="group"
+>
+
+  <tui-combo-box
+    class="tui-space_vertical-3"
+    formControlName="room"
+    [stringify]="stringifyRoom"
+  >
+    Room
+    <input
+      tuiTextfield
+      placeholder="Type room number or owner"
+      (input)="onSearchRoomChange(extractValueFromEvent($event))"
+    />
+    <tui-data-list-wrapper
+      *tuiDataList
+      [items]="rooms$ | async | tuiFilterByInputWith: stringifyRoom"
+      [itemContent]="stringifyRoom | tuiStringifyContent"
+    ></tui-data-list-wrapper>
+  </tui-combo-box>
+
+  <tui-combo-box
+    class="tui-space_vertical-3"
+    formControlName="client"
+    [stringify]="stringifyClient"
+  >
+    Client
+    <input
+      tuiTextfield
+      placeholder="Type client name or surname"
+      (input)="onSearchClientChange(extractValueFromEvent($event))"
+    />
+    <tui-data-list-wrapper
+      *tuiDataList
+      [items]="clients$ | async | tuiFilterByInputWith: stringifyClient"
+      [itemContent]="stringifyClient | tuiStringifyContent"
+    ></tui-data-list-wrapper>
+  </tui-combo-box>
+
+  <tui-error
+    formControlName="client"
+    [error]="[] | tuiFieldError | async"
+  ></tui-error>
+
+  <tui-input-date class="tui-space_vertical-3" formControlName="arrivalDate">
+    Arrival Date
+    <input tuiTextfield />
+  </tui-input-date>
+
+  <tui-error
+    formControlName="arrivalDate"
+    [error]="[] | tuiFieldError | async"
+  ></tui-error>
+
+  <tui-input-date class="tui-space_vertical-3" formControlName="departureDate">
+    Departure Date
+    <input tuiTextfield />
+  </tui-input-date>
+
+  <tui-select
+    class="tui-space_vertical-3"
+    formControlName="lessor"
+  >
+    Lessor
+    <input
+      tuiTextfield
+      placeholder="Choose lessor"
+    />
+    <tui-data-list-wrapper
+      *tuiDataList
+      [items]="lessors"
+    ></tui-data-list-wrapper>
+  </tui-select>
+
+  <tui-input class="tui-space_vertical-3" formControlName="portal">Portal</tui-input>
+</form>
+
+<button tuiButton appearance="primary" class="tui-space_right-3" (click)="ok()" [disabled]="disabled">Save</button>
+<button tuiButton (click)="cancel()">Cancel</button>

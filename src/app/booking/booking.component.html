@@ -1,69 +1,105 @@
-<app-header [title]="title"></app-header>
+<ng-container *tuiLet="mode$ | async as mode">
 
-<div class="main">
-  <table tuiTable [columns]="columns">
-    <thead>
-    <tr tuiThGroup>
-      <th tuiTh>№</th>
-      <th tuiTh>Room</th>
-      <th tuiTh>Guest</th>
-      <th tuiTh>Arrival Date</th>
-      <th tuiTh>Departure Date</th>
-      <th tuiTh>Owner</th>
-      <th tuiTh>Lessor</th>
-      <th tuiTh>Portal</th>
-      <th tuiTh>Bill</th>
-      <th tuiTh></th>
-    </tr>
-    </thead>
-    <tbody tuiTbody>
-<!--    <tr *ngFor="let client of clients$ | async; let idx = index; trackBy: trackByFn" tuiTr>-->
-<!--      <td *tuiCell="'index'" tuiTd>-->
-<!--        {{ idx + 1 }}-->
-<!--      </td>-->
-<!--      <td *tuiCell="'name'" tuiTd>-->
-<!--        {{ client.name }}-->
-<!--      </td>-->
-<!--      <td *tuiCell="'surname'" tuiTd>-->
-<!--        {{ client.surname }}-->
-<!--      </td>-->
-<!--      <td *tuiCell="'passport'" tuiTd>-->
-<!--        {{ client.passport }}-->
-<!--      </td>-->
-<!--      <td *tuiCell="'passportDate'" tuiTd>-->
-<!--        {{ client.passportDate | date: 'dd.MM.yyyy' }}-->
-<!--      </td>-->
-<!--      <td *tuiCell="'citizenship'" tuiTd>-->
-<!--        {{ client.citizenship }}-->
-<!--      </td>-->
-<!--      <td *tuiCell="'actions'" tuiTd>-->
-<!--        <tui-hosted-dropdown #dropdown [content]="content">-->
-<!--          <button-->
-<!--            tuiIconButton-->
-<!--            appearance="flat"-->
-<!--            icon="tuiIconMoreVer"-->
-<!--            type="button"-->
-<!--            [pseudoHover]="dropdown.open || null"-->
-<!--          ></button>-->
-<!--        </tui-hosted-dropdown>-->
+  <app-header [title]="mode + ' Room'"></app-header>
 
-<!--        <ng-template #content>-->
-<!--          <tui-data-list tuiDataListDropdownManager>-->
-<!--            <button tuiOption (click)="update(client)">-->
-<!--              Edit-->
-<!--            </button>-->
+  <div class="main">
+    <table tuiTable [columns]="columns">
+      <thead>
+      <tr tuiThGroup>
+        <th tuiTh>№</th>
+        <th tuiTh>Room</th>
+        <th tuiTh>Guest</th>
+        <th tuiTh>Arrival Date</th>
+        <th tuiTh>Departure Date</th>
+        <th tuiTh>Owner</th>
+        <th tuiTh>Lessor</th>
+        <th tuiTh>Portal</th>
+        <th tuiTh>Bill</th>
+        <th tuiTh *ngIf="mode === 'active'"></th>
+      </tr>
+      </thead>
+      <tbody tuiTbody>
+          <tr *ngFor="let booking of data$ | async; let idx = index; trackBy: trackByFn" tuiTr>
+            <td *tuiCell="'index'" tuiTd>
+              {{ idx + 1 }}
+            </td>
+            <td *tuiCell="'roomNumber'" tuiTd>
+              {{ booking.room.roomNumber }}
+            </td>
+            <td *tuiCell="'guest'" tuiTd>
+              {{ booking.client.name }} {{ booking.client.surname }}
+            </td>
+            <td *tuiCell="'arrivalDate'" tuiTd>
+              {{ booking.arrivalDate | date: 'dd.MM.yyyy' }}
+            </td>
+            <td *tuiCell="'departureDate'" tuiTd>
+              {{ booking.departureDate | date: 'dd.MM.yyyy' }}
+            </td>
+            <td *tuiCell="'owner'" tuiTd>
+              {{ booking.room.owner }}
+            </td>
+            <td *tuiCell="'lessor'" tuiTd>
+              {{ booking.lessor }}
+            </td>
+            <td *tuiCell="'portal'" tuiTd>
+              {{ booking.portal }}
+            </td>
+            <td *tuiCell="'bill'" tuiTd>
+              0$
+            </td>
+            <ng-container *ngIf="mode === 'active'">
+              <td *tuiCell="'actions'" tuiTd>
+                <tui-hosted-dropdown #dropdown [content]="content">
+                  <button
+                    tuiIconButton
+                    appearance="flat"
+                    icon="tuiIconMoreVer"
+                    type="button"
+                    [pseudoHover]="dropdown.open || null"
+                  ></button>
+                </tui-hosted-dropdown>
 
-<!--            <button tuiOption (click)="delete(client)">-->
-<!--              Delete-->
-<!--            </button>-->
-<!--          </tui-data-list>-->
-<!--        </ng-template>-->
-<!--      </td>-->
-<!--    </tr>-->
-    </tbody>
-  </table>
-</div>
+                <ng-template #content>
+                  <tui-data-list tuiDataListDropdownManager>
+                    <button tuiOption (click)="update(booking)">
+                      Edit
+                    </button>
 
-<div class="footer">
-  <button tuiButton appearance="primary" (click)="add()">Active Room</button>
-</div>
+                    <button tuiOption (click)="update(booking)">
+                      Add service
+                    </button>
+
+                    <button tuiOption (click)="update(booking)">
+                      Invoice
+                    </button>
+
+                    <button tuiOption (click)="delete(booking)">
+                      Delete
+                    </button>
+                  </tui-data-list>
+                </ng-template>
+              </td>
+            </ng-container>
+          </tr>
+      </tbody>
+
+      <tfoot>
+        <tr>
+          <td [colSpan]="columns.length">
+            <tui-table-pagination
+              class="tui-space_top-2"
+              [total]="(total$ | async) || 0"
+              (pageChange)="onPage($event)"
+              (sizeChange)="onSize($event)"
+            ></tui-table-pagination>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="footer" *ngIf="mode === 'active'">
+    <button tuiButton appearance="primary" (click)="add()">Active Room</button>
+  </div>
+</ng-container>
+

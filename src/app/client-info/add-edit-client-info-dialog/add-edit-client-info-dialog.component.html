@@ -1,42 +1,45 @@
 <form
   class="b-form"
   [formGroup]="group"
+  [tuiTextfieldCleaner]="true"
 >
   <tui-input formControlName="name">Name</tui-input>
   <tui-error
     formControlName="name"
     [error]="[] | tuiFieldError | async"
   ></tui-error>
+
   <tui-input class="tui-space_vertical-3" formControlName="surname">Surname</tui-input>
+
   <tui-input class="tui-space_vertical-3" formControlName="passport">Passport</tui-input>
-<!--  <tui-input class="tui-space_vertical-3" formControlName="passportDate">Passport Date</tui-input>-->
+
   <tui-input-date formControlName="passportDate">
     Passport Date
     <input tuiTextfield />
   </tui-input-date>
-  <tui-select
+
+  <tui-input
     class="tui-space_vertical-3"
+    *tuiLet="citizenship$ | async as items"
     formControlName="citizenship"
   >
     Citizenship
-    <cdk-virtual-scroll-viewport
-      *tuiDataList
-      tuiScrollable
-      class="scroll"
-      [itemSize]="44"
-    >
-      <tui-data-list>
+    <input
+      tuiTextfield
+      placeholder="Type citizenship"
+    />
+    <ng-container *ngIf="items?.length">
+      <tui-data-list *tuiDataList>
         <button
-          *cdkVirtualFor="let item of citizenship"
+          *ngFor="let item of citizenship$ | async"
           tuiOption
           [value]="item"
         >
           {{ item }}
         </button>
       </tui-data-list>
-    </cdk-virtual-scroll-viewport>
-  </tui-select>
-
+    </ng-container>
+  </tui-input>
 </form>
 
 <button tuiButton appearance="primary" class="tui-space_right-3" (click)="ok()" [disabled]="disabled">Save</button>

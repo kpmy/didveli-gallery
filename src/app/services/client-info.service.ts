@@ -30,6 +30,12 @@ export class ClientInfoService {
     );
   }
 
+  findByNameOrSurname(substr: string): Observable<Client[]> {
+    return of(this.ipc.sendSync('get-clients-by-name-or-surname', substr)).pipe(
+      catchError((error: any) => throwError(error.json))
+    );
+  }
+
   save(client: Client): Observable<Client[]> {
     return of(
       this.ipc.sendSync('add-client', client)

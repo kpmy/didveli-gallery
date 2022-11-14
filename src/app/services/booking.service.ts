@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import {IpcRenderer} from 'electron';
 import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {Room} from '../../assets/model/room.schema';
+import {Booking} from '../../assets/model/booking.schema';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoomInfoService {
+export class BookingService {
 
+  // todo вынести в абстрактный сервис?
   private readonly ipc: IpcRenderer | undefined = void 0;
 
   constructor() {
@@ -23,32 +24,26 @@ export class RoomInfoService {
     }
   }
 
-  getAll(skip: number, take: number): Observable<Room[]> {
-    return of(this.ipc.sendSync('get-rooms', skip, take)).pipe(
+  getAll(skip: number, take: number): Observable<Booking[]> {
+    return of(this.ipc.sendSync('get-bookings', skip, take)).pipe(
       catchError((error: any) => throwError(error.json))
     );
   }
 
-  findByRoomNumberOrOwner(substr: string): Observable<Room[]> {
-    return of(this.ipc.sendSync('get-rooms-by-number-or-owner', substr)).pipe(
-      catchError((error: any) => throwError(error.json))
-    );
-  }
-
-  save(room: Room): Observable<Room[]> {
+  save(booking: Booking): Observable<Booking[]> {
     return of(
-      this.ipc.sendSync('add-room', room)
+      this.ipc.sendSync('add-booking', booking)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
-  delete(room: Room): Observable<Room[]> {
+  delete(booking: Booking): Observable<Booking[]> {
     return of(
-      this.ipc.sendSync('delete-room', room)
+      this.ipc.sendSync('delete-booking', booking)
     ).pipe(catchError((error: any) => throwError(error.json)));
   }
 
   getCount(): Observable<number> {
-    return of(this.ipc.sendSync('count-rooms')).pipe(
+    return of(this.ipc.sendSync('count-bookings')).pipe(
       catchError((error: any) => throwError(error.json))
     );
   }

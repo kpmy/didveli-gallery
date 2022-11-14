@@ -1,10 +1,11 @@
 import {app, BrowserWindow, ipcMain, screen} from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
-import {DataSource} from "typeorm";
+import {DataSource, Like} from "typeorm";
 import {Service} from "../src/assets/model/service.schema";
 import {Room} from "../src/assets/model/room.schema";
 import {Client} from "../src/assets/model/client.schema";
+import {Booking} from "../src/assets/model/booking.schema";
 
 // const {serviceRepository} = require("./serviceRepository");
 // const {roomRepository} = require("./roomRepository");
@@ -21,7 +22,7 @@ function createWindow(): BrowserWindow {
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
-    entities: [ Client, Service, Room ],
+    entities: [Booking, Client, Service, Room],
   });
 
   AppDataSource.initialize()
@@ -30,11 +31,74 @@ function createWindow(): BrowserWindow {
       // serviceRepository(AppDataSource);
       // roomRepository(AppDataSource);
 
+      const bookingRepo = AppDataSource.getRepository(Booking);
+
+      ipcMain.on('get-bookings', async (event: any, _skip: number, _take: number) => {
+        try {
+          event.returnValue = await bookingRepo
+            .createQueryBuilder("booking")
+            .skip(_skip)
+            .take(_take)
+            .leftJoinAndSelect("booking.client", "client")
+            .leftJoinAndSelect("booking.room", "room")
+            .getMany();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('add-booking', async (event: any, _booking: Booking) => {
+        try {
+          const booking = await bookingRepo.create(_booking);
+          await bookingRepo.save(booking);
+          event.returnValue = await bookingRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('delete-booking', async (event: any, _booking: Booking) => {
+        try {
+          const booking = await bookingRepo.create(_booking);
+          await bookingRepo.remove(booking);
+          event.returnValue = await bookingRepo.find();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('count-bookings', async (event: any, ...args: any[]) => {
+        try {
+          event.returnValue = await bookingRepo.count();
+        } catch (err) {
+          throw err;
+        }
+      });
+
       const clientRepo = AppDataSource.getRepository(Client);
 
       ipcMain.on('get-clients', async (event: any, _skip: number, _take: number) => {
         try {
-          event.returnValue = await clientRepo.createQueryBuilder("client").skip(_skip).take(_take).getMany();
+          event.returnValue = await clientRepo
+            .createQueryBuilder("client")
+            .skip(_skip)
+            .take(_take)
+            .getMany();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('get-clients-by-name-or-surname', async (event: any, substr: string) => {
+        try {
+          event.returnValue = await clientRepo.findBy([
+            {
+              name: Like(`${substr}%`)
+            },
+            {
+              surname: Like(`${substr}%`)
+            }
+          ])
         } catch (err) {
           throw err;
         }
@@ -72,7 +136,11 @@ function createWindow(): BrowserWindow {
 
       ipcMain.on('get-services', async (event: any, _skip: number, _take: number) => {
         try {
-          event.returnValue = await serviceRepo.createQueryBuilder("service").skip(_skip).take(_take).getMany();
+          event.returnValue = await serviceRepo
+            .createQueryBuilder("service")
+            .skip(_skip)
+            .take(_take)
+            .getMany();
         } catch (err) {
           throw err;
         }
@@ -110,12 +178,32 @@ function createWindow(): BrowserWindow {
 
       ipcMain.on('get-rooms', async (event: any, _skip: number, _take: number) => {
         try {
-          event.returnValue = await roomRepo.createQueryBuilder("room").skip(_skip).take(_take).getMany();
+          event.returnValue = await roomRepo
+            .createQueryBuilder("room")
+            .skip(_skip)
+            .take(_take)
+            .getMany();
         } catch (err) {
           throw err;
         }
       });
 
+      ipcMain.on('get-rooms-by-number-or-owner', async (event: any, substr: string) => {
+        try {
+          event.returnValue = await roomRepo.findBy([
+            {
+              roomNumber: Like(`${substr}%`)
+            },
+            {
+              owner: Like(`${substr}%`)
+            }
+          ])
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      //todo при редактировании делать версию
       ipcMain.on('add-room', async (event: any, _room: Room) => {
         try {
           const room = await roomRepo.create(_room);
@@ -126,6 +214,7 @@ function createWindow(): BrowserWindow {
         }
       });
 
+      // todo не удалять на совсем
       ipcMain.on('delete-room', async (event: any, _room: Room) => {
         try {
           const room = await roomRepo.create(_room);
@@ -172,7 +261,7 @@ function createWindow(): BrowserWindow {
     let pathIndex = './index.html';
 
     if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-       // Path when running electron in local folder
+      // Path when running electron in local folder
       pathIndex = '../dist/index.html';
     }
 

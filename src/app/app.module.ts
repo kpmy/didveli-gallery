@@ -25,6 +25,8 @@ import {
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import { BookingComponent } from './booking/booking.component';
 import { CompanyInfoComponent } from './company-info/company-info.component';
+import { AddEditBookingDialogComponent } from './booking/add-edit-booking-dialog/add-edit-booking-dialog.component';
+import { AddEditCompanyInfoDialogComponent } from './company-info/add-edit-company-info-dialog/add-edit-company-info-dialog.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,10 @@ import { CompanyInfoComponent } from './company-info/company-info.component';
     ClientInfoComponent,
     AddEditClientInfoDialogComponent,
     BookingComponent,
-    CompanyInfoComponent],
+    CompanyInfoComponent,
+    AddEditBookingDialogComponent,
+    AddEditCompanyInfoDialogComponent
+  ],
   imports: [
     BrowserModule,
     FormsModule,
