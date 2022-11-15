@@ -6,9 +6,7 @@ import {Service} from "../src/assets/model/service.schema";
 import {Room} from "../src/assets/model/room.schema";
 import {Client} from "../src/assets/model/client.schema";
 import {Booking} from "../src/assets/model/booking.schema";
-
-// const {serviceRepository} = require("./serviceRepository");
-// const {roomRepository} = require("./roomRepository");
+import {Company} from "../src/assets/model/company.schema";
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -22,15 +20,11 @@ function createWindow(): BrowserWindow {
     logging: true,
     logger: 'simple-console',
     database: './src/assets/data/database.sqlite',
-    entities: [Booking, Client, Service, Room],
+    entities: [Booking, Client, Service, Room, Company],
   });
 
   AppDataSource.initialize()
     .then(() => {
-      // here you can start to work with your database
-      // serviceRepository(AppDataSource);
-      // roomRepository(AppDataSource);
-
       const bookingRepo = AppDataSource.getRepository(Booking);
 
       ipcMain.on('get-bookings', async (event: any, _skip: number, _take: number) => {
@@ -228,6 +222,29 @@ function createWindow(): BrowserWindow {
       ipcMain.on('count-rooms', async (event: any, ...args: any[]) => {
         try {
           event.returnValue = await roomRepo.count();
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      const companyRepo = AppDataSource.getRepository(Company);
+
+      ipcMain.on('get-company-info', async (event: any) => {
+        try {
+          event.returnValue = await companyRepo.findOne({
+            where: {},
+            order: { id: 'DESC' },
+          });
+        } catch (err) {
+          throw err;
+        }
+      });
+
+      ipcMain.on('save-company-info', async (event: any, _company: Company) => {
+        try {
+          const company = await companyRepo.create(_company);
+          await companyRepo.save(company);
+          event.returnValue = true;
         } catch (err) {
           throw err;
         }

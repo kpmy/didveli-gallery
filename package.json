@@ -26,7 +26,6 @@
   "scripts": {
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
-    "start-forge": "electron-forge start",
     "ng:serve": "ng serve -c web -o",
     "build": "npm run electron:serve-tsc && ng build --base-href ./",
     "build:dev": "npm run build -- -c dev",
@@ -36,15 +35,13 @@
     "electron:serve-tsc": "tsc -p tsconfig.serve.json",
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && electron . --serve",
     "electron:local": "npm run build:prod && electron .",
-    "electron:build": "npm run build:prod && electron-builder build --publish=never",
+    "electron:build": "electron-builder build --publish=never",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "e2e": "npm run build:prod && playwright test -c e2e/playwright.config.ts e2e/",
     "e2e:show-trace": "playwright show-trace e2e/tracing/trace.zip",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
-    "lint": "ng lint",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "lint": "ng lint"
   },
   "dependencies": {
     "@angular/cdk": "^14.0.0",
@@ -83,11 +80,6 @@
     "@angular-eslint/template-parser": "14.1.2",
     "@angular/cli": "14.2.7",
     "@angular/compiler-cli": "14.2.8",
-    "@electron-forge/cli": "^6.0.0-beta.69",
-    "@electron-forge/maker-deb": "^6.0.0-beta.69",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.69",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.69",
-    "@electron-forge/maker-zip": "^6.0.0-beta.69",
     "@playwright/test": "1.27.1",
     "@types/dompurify": "2.2.3",
     "@types/jasmine": "4.3.0",
@@ -120,33 +112,6 @@
   },
   "engines": {
     "node": ">= 14.15.0"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "didveli_gallery"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
   },
   "browserslist": [
     "chrome 100"

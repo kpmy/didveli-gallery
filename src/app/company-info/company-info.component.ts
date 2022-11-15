@@ -1,8 +1,8 @@
-import {ChangeDetectionStrategy, Component, Inject, Injector} from '@angular/core';
-import {EMPTY, switchMap} from 'rxjs';
-import {TuiDialogService} from '@taiga-ui/core';
-import {PolymorpheusComponent} from '@tinkoff/ng-polymorpheus';
-import {AddEditCompanyInfoDialogComponent} from './add-edit-company-info-dialog/add-edit-company-info-dialog.component';
+import {ChangeDetectionStrategy, Component, Inject, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Company} from '../../assets/model/company.schema';
+import {CompanyInfoService} from '../services/company-info.service';
+import {TuiAlertService} from '@taiga-ui/core';
 
 @Component({
   selector: 'app-company-info',
@@ -10,23 +10,56 @@ import {AddEditCompanyInfoDialogComponent} from './add-edit-company-info-dialog/
   styleUrls: ['./company-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CompanyInfoComponent {
+export class CompanyInfoComponent implements OnInit {
 
-  constructor(@Inject(TuiDialogService) private readonly dialogService: TuiDialogService,
-              @Inject(Injector) private readonly injector: Injector) { }
+  group: FormGroup = new FormGroup({});
+  isEditModeOn = false;
+  company: Company = new Company();
+  // todo попробовать
+  // readonly company$ = this.companyService.getCompany()
+  //   .pipe(
+  //     map((res: Company) => Object.assign(this.company, res))
+  //   );
 
-  openAddEditCompanyInfoDialog() {
-    this.dialogService.open(
-      new PolymorpheusComponent(AddEditCompanyInfoDialogComponent, this.injector),
-      {
-        size: `m`,
-        dismissible: false
-      },
-    )
-      .pipe(
-        switchMap((res: any) => res ? res : EMPTY)
-      )
-      .subscribe((res) => console.log(res));
+  constructor(private readonly companyService: CompanyInfoService,
+              @Inject(TuiAlertService)
+              private readonly alertService: TuiAlertService) { }
+
+  get disabled() {
+    return this.group.invalid || !this.isEditModeOn;
   }
 
+  ngOnInit(): void {
+    //todo unsubscribe
+    this.companyService.getCompany().subscribe(res => {
+      Object.assign(this.company, res);
+      this.initGroup();
+    });
+  }
+
+  initGroup() {
+    this.group = new FormGroup({
+      name: new FormControl(this.company.name, Validators.required),
+      companyId: new FormControl(this.company.companyId, Validators.required),
+      address: new FormControl(this.company.address, Validators.required),
+      bank: new FormControl(this.company.bank, Validators.required),
+      phone: new FormControl(this.company.phone, Validators.required),
+      email: new FormControl(this.company.email, Validators.required),
+      logo: new FormControl(null),
+    });
+    this.group.disable();
+  }
+
+  save() {
+    //todo unsubscribe
+    Object.assign(this.company, this.group.value);
+    this.companyService.save(this.company).subscribe(res => {
+        const notification = res ? 'Company info saved' : 'Error, try again';
+        this.alertService.open(notification).subscribe();
+      });
+  }
+
+  toggleForm() {
+    this.group.disabled ? this.group.enable() : this.group.disable();
+  }
 }

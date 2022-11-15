@@ -23,7 +23,6 @@ export class AddEditClientInfoDialogComponent implements OnInit {
 
   group: FormGroup = new FormGroup({});
   client: Client = new Client();
-  readonly citizenship = citizenship;
   citizenship$: Observable<string[]> = of([]);
 
   constructor(@Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<Client>) {
@@ -55,7 +54,7 @@ export class AddEditClientInfoDialogComponent implements OnInit {
     // убрать share и async pipe в ngFor, когда пофиксят
     this.citizenship$ = tuiControlValue<string>(this.group.get('citizenship')).pipe(
       map(value => {
-        const filtered = this.citizenship.filter(user => TUI_DEFAULT_MATCHER(user, value));
+        const filtered = citizenship.filter(user => TUI_DEFAULT_MATCHER(user, value));
         if (
           filtered.length !== 1 ||
           String(filtered[0]).toLowerCase() !== value.toLowerCase()
