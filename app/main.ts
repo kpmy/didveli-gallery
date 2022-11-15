@@ -1,12 +1,13 @@
 import {app, BrowserWindow, ipcMain, screen} from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
+//TODO все импорты бэка должны быть внутри app и в app/package.json (модели пришлось задублировать для работы)
 import {DataSource, Like} from "typeorm";
-import {Service} from "../src/assets/model/service.schema";
-import {Room} from "../src/assets/model/room.schema";
-import {Client} from "../src/assets/model/client.schema";
-import {Booking} from "../src/assets/model/booking.schema";
-import {Company} from "../src/assets/model/company.schema";
+import {Service} from "./model/service.schema";
+import {Room} from "./model/room.schema";
+import {Client} from "./model/client.schema";
+import {Booking} from "./model/booking.schema";
+import {Company} from "./model/company.schema";
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -19,7 +20,7 @@ function createWindow(): BrowserWindow {
     synchronize: true,
     logging: true,
     logger: 'simple-console',
-    database: './src/assets/data/database.sqlite',
+    database: './src/assets/data/database.sqlite', //TODO надо делать path.join(app.getPath("userData'),'database.sqlite' ) иначе база будет в папке программ и возможна потеря данных при установке
     entities: [Booking, Client, Service, Room, Company],
   });
 
@@ -266,6 +267,10 @@ function createWindow(): BrowserWindow {
       contextIsolation: false,  // false if you want to run e2e test with Spectron
     },
   });
+
+  //убрал меню из окна
+  win.setMenuBarVisibility(false);
+  win.setAutoHideMenuBar(true);
 
   if (serve) {
     const debug = require('electron-debug');

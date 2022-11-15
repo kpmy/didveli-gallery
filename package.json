@@ -44,6 +44,7 @@
     "lint": "ng lint"
   },
   "dependencies": {
+    "@angular/animations": "14.2.8",
     "@angular/cdk": "^14.0.0",
     "@angular/common": "14.2.8",
     "@angular/compiler": "14.2.8",
@@ -58,8 +59,8 @@
     "@taiga-ui/cdk": "^3.8.0",
     "@taiga-ui/core": "^3.8.0",
     "@taiga-ui/icons": "^3.8.0",
-    "@taiga-ui/styles": "^3.8.0",
     "@taiga-ui/kit": "^3.8.0",
+    "@taiga-ui/styles": "^3.8.0",
     "@tinkoff/ng-dompurify": "3.0.0",
     "dompurify": "2.2.9",
     "electron-squirrel-startup": "1.0.0",
@@ -89,6 +90,7 @@
     "@typescript-eslint/parser": "5.40.0",
     "conventional-changelog-cli": "2.2.2",
     "electron": "21.1.1",
+    "electron-builder": "23.6.0",
     "electron-debug": "3.2.0",
     "electron-reloader": "1.2.3",
     "eslint": "8.25.0",
