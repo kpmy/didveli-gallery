@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: electronuserland/builder:wine
-      options: --user github
+      options: --user root
     steps:
     - uses: actions/checkout@v3 
     - run: npm install --legacy-peer-deps 
@@ -19,7 +19,7 @@ jobs:
     - run: npm install --legacy-peer-deps --target_arch=x64 --target_platform=win32
     - run: cd ..
     - run: npm run build:prod
-    - run: npm run electron:build  
+    - run: sudo -u root npm run electron:build  
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
