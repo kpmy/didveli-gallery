@@ -22,8 +22,7 @@ jobs:
     - run: apt-get -qq update && apt-get install -y sudo
     - run: sudo adduser --gecos "" github
     - run: pwd
-    - run: sudo mkdir -p /__w/didveli-gallery-assist/didveli-gallery-assist/release
-    - run: sudo chown github /__w/didveli-gallery-assist/didveli-gallery-assist/release
+    - run: sudo chown -R github $(pwd)
     - run: sudo -u github npm run electron:build  
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
