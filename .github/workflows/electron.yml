@@ -19,7 +19,8 @@ jobs:
     - run: npm install --legacy-peer-deps --target_arch=x64 --target_platform=win32
     - run: cd ..
     - run: npm run build:prod
-    - run: sudo -u root npm run electron:build  
+    - run: chown -R ${USER} /home/githum/
+    - run: npm run electron:build  
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
