@@ -12,8 +12,7 @@ jobs:
     container: 
       image: electronuserland/builder:wine
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js 
+    - uses: actions/checkout@v3 
     - run: npm install --legacy-peer-deps 
     - run: cd app
     - run: npm install --legacy-peer-deps --target_arch=x64 --target_platform=win32
