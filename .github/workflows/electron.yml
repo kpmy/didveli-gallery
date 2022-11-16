@@ -28,6 +28,6 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         file: release/didveli-gallery 1.0.0.exe
-        asset_name: didveli
+        asset_name: didveli.installer.exe
         tag: ${{ github.ref }}
         overwrite: true
