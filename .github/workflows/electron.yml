@@ -20,7 +20,7 @@ jobs:
     - run: cd ..
     - run: npm run build:prod
     - run: apt-get -qq update && apt-get install -y sudo
-    - run: sudo adduser --disabled-password --create-home --gecos "" github
+    - run: sudo adduser --create-home --gecos "" github
     - run: sudo -u github npm run electron:build  
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
