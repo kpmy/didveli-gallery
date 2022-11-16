@@ -26,9 +26,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install --legacy-peer-deps
+    - run: npm install --legacy-peer-deps 
     - run: cd app
-    - run: npm install --legacy-peer-deps
+    - run: npm install --legacy-peer-deps --target_arch=x64 --target_platform=win32
     - run: cd ..
     - run: npm run build:prod
     - run: npm run electron:build
